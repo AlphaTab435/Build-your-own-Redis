@@ -42,7 +42,8 @@ def main():
         server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     
     client_conn, client_addr =server_socket.accept() # wait for client
-    client_conn.sendall("+PONG".encode())
+    
+    client_conn.sendall("+PONG\r\n".encode())
 
 
 if __name__ == "__main__":
