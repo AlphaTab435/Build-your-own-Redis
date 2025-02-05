@@ -4,6 +4,8 @@ async def start_client():
     reader, writer = await asyncio.open_connection("localhost", 6379)
 
     messages = ["Hello Server!", "How are you?", "exit"]
+    # messages = ["Hello Server!"]
+
     for msg in messages:
         writer.write(msg.encode())
         await writer.drain()  # Ensure message is sent
@@ -18,6 +20,9 @@ async def start_client():
 
 if __name__ == "__main__":
     asyncio.run(start_client())
+    asyncio.run(start_client())
+    asyncio.run(start_client())
+
 
 # Async TCP Client (Sends Messages Without Blocking)
 '''
