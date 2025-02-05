@@ -30,21 +30,25 @@ def checkIfWindows():
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!")
-
-    # Uncomment this to pass the first stage
-    isWindows=checkIfWindows()
-    if(isWindows):
-        server_socket = socket.create_server(("localhost", 6379))
-        print("Server started on port 6379")
-
-        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # Allows address reuse
-    else:
-        server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
+    try:
+        # Uncomment this to pass the first stage
+        isWindows=checkIfWindows()
+        if(isWindows):
+            server_socket = socket.create_server(("localhost", 6379))
+            print("Server started on port 6379")
     
-    client_conn, client_addr =server_socket.accept() # wait for client
+            server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # Allows address reuse
+        else:
+            server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
+        while True:
+            client_conn, client_addr =server_socket.accept() # wait for client
+            client_conn.sendall("+PONG\r\n".encode())
+    except KeyboardInterrupt:
+            print("\nShutting down server...")
+    finally:
+            server_socket.close()  # Ensure socket is properly closed
+            print("Server socket closed.")
     
-    client_conn.sendall("+PONG\r\n".encode())
-
 
 if __name__ == "__main__":
     main()
