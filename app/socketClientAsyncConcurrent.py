@@ -1,5 +1,16 @@
 import asyncio
 
+# proper RESP format
+def to_redis_resp(command, *args):
+    parts = [command.upper()] + list(args)  # Ensure command is uppercase (Redis is case-insensitive)
+    resp = f"*{len(parts)}\r\n"  # Array header
+    
+    for part in parts:
+        resp += f"${len(part)}\r\n{part}\r\n"  # Bulk string format
+
+    return resp
+
+
 async def start_client(client_id):
     reader, writer = await asyncio.open_connection("localhost", 6379)
 
