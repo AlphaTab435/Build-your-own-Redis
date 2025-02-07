@@ -7,18 +7,24 @@ def to_redis_resp(command, *args):
     
     for part in parts:
         resp += f"${len(part)}\r\n{part}\r\n"  # Bulk string format
-
+    print("Start")
+    print(resp)
+    print("End")
     return resp
 
 
 async def start_client(client_id):
     reader, writer = await asyncio.open_connection("localhost", 6379)
 
-    messages = ["PING", "Hello Server!", "exit"]
+    # messages = ["PING", "Hello Server!", "exit"]
+    messages = [("PING",), ("ECHO", "Hello Server!"), ("QUIT",)]
 
-    for msg in messages:
+
+    for message in messages:
+        msg = to_redis_resp(*message)
+        # msg =message
         print(f"Client {client_id} sending: {msg}")
-        writer.write(msg.encode() + b"\r\n")  # Ensures Redis-style newline
+        writer.write(msg.encode())  # Ensures Redis-style newline
         await writer.drain()
 
         response = await reader.read(1024)
